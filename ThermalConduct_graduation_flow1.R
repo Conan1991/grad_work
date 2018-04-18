@@ -9,13 +9,13 @@ c2_U = 4195
 c1_U = 2000
 
 a=(k1_U/c1_U)^(1/2)
-h = 0.250 #шаг по x
-print(h)
+h = 0.0002 #шаг по x
+#print(h)
 tau = h^2/a^2
 
-L = 2 #длина
+L = 0.006 #длина
 N = round(L/h) #Число шагов
-n = 30 #Число шагов по времени
+n = 15 #Число шагов по времени
 tj = numeric(n) #tau j
 nj = numeric(n) #ветор моментов времени
 
@@ -187,7 +187,7 @@ for(j in 1:n)
 }
 
 
-
+options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
 print("Численное решение")
 print(U)
 #print("Точное решение")
