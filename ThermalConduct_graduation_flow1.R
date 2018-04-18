@@ -1,27 +1,24 @@
 rm(list = ls())
 
-k1=k2=1
+#k1=k2=1
+k1=k2=0
 
-k2_U= 0.5786
-k1_U= 2.3
+#k2_U= 0.5786
+k1_U = k2_U = 2.3
 
-c2_U = 4195
+c2_U = 2000
 c1_U = 2000
 
 a=(k1_U/c1_U)^(1/2)
-h = 0.0002 #шаг по x
+h = 0.01 #шаг по x
 #print(h)
 tau = h^2/a^2
 
-L = 0.003 #длина
+L = 0.1 #длина
 N = round(L/h) #Число шагов
-n = 15 #Число шагов по времени
+n = 20 #Число шагов по времени
 tj = numeric(n) #tau j
 nj = numeric(n) #ветор моментов времени
-
-
-
-
 
 # k2_U= 1
 # k1_U= 1
@@ -48,13 +45,13 @@ A = function(t)
 {
   #0
   #1/(1+t)
-  1
+  -10
 }
 B = function(t)
 {
   #0
   #1/(1+t)
-  1
+  10
 }
 
 
@@ -88,7 +85,7 @@ Ux0=function(x)
 {
   #A(tj[1]) + (B(tj[1])-A(tj[1]))*(x/L)^2;
   #1
-  0
+  10
 }
 
 for(i in 1:N+1)
@@ -111,7 +108,7 @@ IterF = function(j) #Считаем остальные слои
 {
   
 alpha[1]=k1
-beta[1]=-h*A(tj[j])
+beta[1]=A(tj[j])
 #print(beta[1])
 
 for(i in 1:N) # Считаем очередные Ai, Bi , Ci
@@ -136,7 +133,7 @@ beta[i]= (Fi[i-1]-Ai[i-1]*beta[i-1])/(Ci[i-1]+Ai[i-1]*alpha[i-1])
 #print(beta)
 #print(alpha)
 #B(tj[j])
-U[j,N+1]=(h*B(tj[j])+k2*beta[N])/(1-k2*alpha[N])
+U[j,N+1]=(B(tj[j])+k2*beta[N])/(1-k2*alpha[N])
 
 for(i in N:1) #Считаем Uj
   U[j,i]= alpha[i] * U[j,i+1] + beta[i]
