@@ -170,7 +170,7 @@ return(U[j,])
 for(j in 2:n)
 {
   U[j,] = IterF(j)
-  #U[j,] = CoeffF(j)
+  U[j,] = CoeffF(j)
 }
 
 # Uacc = matrix(data=NA,nrow=n,ncol=N+1)
