@@ -3,20 +3,27 @@ rm(list = ls())
 #k1=k2=1
 k1=k2=0
 
-#k2_U= 0.5786
-k1_U = k2_U = 2.3
 
-c2_U = 2000
-c1_U = 2000
+k1_U = 2.3
+k2_U = k1_U
+#k2_U = 0.5786
+density1  = 918.7
+density2 = 999.7
+mean_density= mean(c(density1,density2))
 
+
+c1_U = 2000 * mean_density
+c2_U = c1_U #4195 * mean_density
 a=(k1_U/c1_U)^(1/2)
-h = 0.01 #шаг по x
+h = 0.0002 #шаг по x
 #print(h)
 tau = h^2/a^2
 
-L = 0.1 #длина
+
+
+L = 0.003 #длина
 N = round(L/h) #Число шагов
-n = 20 #Число шагов по времени
+n = 150 #Число шагов по времени
 tj = numeric(n) #tau j
 nj = numeric(n) #ветор моментов времени
 
@@ -146,28 +153,35 @@ for(j in 2:n)
   U[j,] = IterF(j)
 
 
-Uacc = matrix(data=NA,nrow=n,ncol=N+1)
-colnames(Uacc)=x
-row.names(Uacc)= c(0:(n-1))
+# Uacc = matrix(data=NA,nrow=n,ncol=N+1)
+# colnames(Uacc)=x
+# row.names(Uacc)= c(0:(n-1))
+# 
+# summm=function(x,t)
+# {
+# summ=0
+#      for(k in 1:10000)
+#      {
+#         #summ= summ + 1/(2*k-1)^3*sin((2*k-1)*pi*x/L) * exp(-(2*k-1)^2*pi^2*a^2*t/L^2)
+#         #if(k==10) print(summ)
+#        summ= summ + (-1)^(k+1)/k^2*exp(-k^2*pi^2*a^2*t/L^2)*cos(k*pi*x/L)
+#      }
+# return(summ)
+# }
+# 
+# 
+# for(ix in 1:(N+1))
+#   for(it in 1:n) {
+#     #Uacc[it,ix]=A(tj[it]) + (B(tj[it]) - A(tj[it])) * x[ix]/L - 8*(B(tj[it])-A(tj[it]))/pi^3 * summm(x[ix], tj[it])
+#     Uacc[it,ix]=B(tj[it])*(a^2*tj[it]/L+(3*x[ix]^2-L^2)/(6*L))+2*L/pi^2*summm(x[ix], tj[it])
+# }
 
-summm=function(x,t)
-{
-summ=0
-     for(k in 1:10000)
-     {
-        #summ= summ + 1/(2*k-1)^3*sin((2*k-1)*pi*x/L) * exp(-(2*k-1)^2*pi^2*a^2*t/L^2)
-        #if(k==10) print(summ)
-       summ= summ + (-1)^(k+1)/k^2*exp(-k^2*pi^2*a^2*t/L^2)*cos(k*pi*x/L)
-     }
-return(summ)
-}
 
-
-for(ix in 1:(N+1))
-  for(it in 1:n) {
-    #Uacc[it,ix]=A(tj[it]) + (B(tj[it]) - A(tj[it])) * x[ix]/L - 8*(B(tj[it])-A(tj[it]))/pi^3 * summm(x[ix], tj[it])
-    #Uacc[it,ix]=B(tj[it])*(a^2*tj[it]/L+(3*x[ix]^2-L^2)/(6*L))+2*L/pi^2*summm(x[ix], tj[it])
-}
+options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
+print("Численное решение")
+print(U)
+#print("Точное решение")
+#print(Uacc)
 
 library(animation)
 oopt = ani.options(interval = 0.3)
@@ -185,15 +199,9 @@ for(j in 1:n)
 }
 
 
-options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
-print("Численное решение")
-print(U)
-#print("Точное решение")
-#print(Uacc)
 
-
-while(TRUE)
-{ 
-ani.replay()
-ani.options(oopt, loop = 100)
-}
+# while(TRUE)
+# { 
+# ani.replay()
+# ani.options(oopt, loop = 100)
+# }
