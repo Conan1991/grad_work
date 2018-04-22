@@ -6,16 +6,17 @@ k1=k2=0
 
 k1_U = 2.3
 k2_U = k1_U
-#k2_U = 0.5786
+#k2_U = 0.58
 density1  = 918.7
 density2 = 999.7
 mean_density= mean(c(density1,density2))
 
 
 c1_U = 2000 * mean_density
-c2_U = c1_U #4195 * mean_density
+c2_U = 4195 * mean_density
+#c2_U = c1_U
 a=(k1_U/c1_U)^(1/2)
-h = 0.0002 #шаг по x
+h = 0.0001875 #шаг по x
 #print(h)
 tau = h^2/a^2
 
@@ -35,16 +36,16 @@ nj = numeric(n) #ветор моментов времени
 
 kU = function(U_i)
 {
-  if( U_i < 0)
+  if( U_i < 0.001)
     return(k1_U)
-  return(k2_U)
+  else return(k2_U)
 }
 
 CU = function(U_i)
 {
-  if( U_i < 0)
+  if( U_i < 0.001)
     return(c1_U)
-  return(c2_U)
+  else return(c2_U)
 }
 
 
@@ -76,12 +77,6 @@ Fi = numeric(N-1)
 alpha = numeric(N)
 beta = numeric(N)
 
-#j=1 0-й слой
-t_j = function(r)
-{
-  r^2/a^2
-}
-
 for(j in 1:n)
 {
   tj[j]=(j-1)*tau
@@ -111,35 +106,58 @@ for(i in 0:N+1) #Считаем 0-й слой
   U[1,i] = Ux0(x[i])
 }
 
+CoeffF = function(j) #Поправка на коэфф
+{
+  
+  alpha[1] = k1
+  beta[1] = A(tj[j])
+  
+  for(i in 1:N) # Считаем очередные Ai, Bi , Ci
+  {
+    Ai[i] = - kU(U[j,i]) / h^2
+    Bi[i] = - kU(U[j,i]) / h^2
+    Ci[i] = CU(U[j,i]) / tau + 2 * kU(U[j,i]) / h^2
+  }
+  
+  for(i in 1:(N-1)) #Считаем Fi
+    Fi[i] = CU(U[j,i]) * U[j-1,i+1] / tau
+  
+  for(i in 2:N) #Считаем альфа и бета коэффициенты
+  {
+    alpha[i]=-Bi[i-1]/(Ci[i-1]+Ai[i-1]*alpha[i-1])
+    beta[i]= (Fi[i-1]-Ai[i-1]*beta[i-1])/(Ci[i-1]+Ai[i-1]*alpha[i-1])
+  }
+  
+  U[j,N+1]=(B(tj[j])+k2*beta[N])/(1-k2*alpha[N])
+  for(i in N:1) #Считаем Uj
+    U[j,i]= alpha[i] * U[j,i+1] + beta[i]
+  
+  return(U[j,])
+}
+
 IterF = function(j) #Считаем остальные слои
 {
   
-alpha[1]=k1
-beta[1]=A(tj[j])
-#print(beta[1])
+alpha[1] = k1
+beta[1] = A(tj[j])
 
 for(i in 1:N) # Считаем очередные Ai, Bi , Ci
 {
   Ai[i] = - kU(U[j-1,i]) / h^2
   Bi[i] = - kU(U[j-1,i]) / h^2
   Ci[i] = CU(U[j-1,i]) / tau + 2 * kU(U[j-1,i]) / h^2
-  
 }
 
 for(i in 1:(N-1)) #Считаем Fi
 Fi[i] = CU(U[j-1,i])*U[j-1,i+1]/tau
 
-#print(Fi)
-  
+
 for(i in 2:N) #Считаем альфа и бета коэффициенты
 {
 alpha[i]=-Bi[i-1]/(Ci[i-1]+Ai[i-1]*alpha[i-1])
 beta[i]= (Fi[i-1]-Ai[i-1]*beta[i-1])/(Ci[i-1]+Ai[i-1]*alpha[i-1])
 }
 
-#print(beta)
-#print(alpha)
-#B(tj[j])
 U[j,N+1]=(B(tj[j])+k2*beta[N])/(1-k2*alpha[N])
 
 for(i in N:1) #Считаем Uj
@@ -150,8 +168,10 @@ return(U[j,])
 }
 
 for(j in 2:n)
+{
   U[j,] = IterF(j)
-
+  #U[j,] = CoeffF(j)
+}
 
 # Uacc = matrix(data=NA,nrow=n,ncol=N+1)
 # colnames(Uacc)=x
