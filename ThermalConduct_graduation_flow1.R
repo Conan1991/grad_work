@@ -12,8 +12,8 @@ density2 = 999.7
 mean_density= mean(c(density1,density2))
 
 
-c1_U = 2000 * mean_density
-c2_U = 4195 * mean_density
+c1_U = 2000 * density1
+c2_U = 4195 * density2
 #c2_U = c1_U
 a=(k1_U/c1_U)^(1/2)
 h = 0.00035 #шаг по x
