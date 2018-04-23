@@ -13,16 +13,16 @@ mean_density= mean(c(density1,density2))
 
 
 c1_U = 2000 * mean_density
-#c2_U = 4195 * mean_density
-c2_U = c1_U
+c2_U = 4195 * mean_density
+#c2_U = c1_U
 a=(k1_U/c1_U)^(1/2)
-h = 0.000350 #шаг по x
+h = 0.00035 #шаг по x
 #print(h)
 tau = h^2/a^2
 
 
 
-L = 0.008 #длина
+L = 0.006 #длина
 N = round(L/h) #Число шагов
 n = 150 #Число шагов по времени
 tj = numeric(n) #tau j
@@ -111,15 +111,12 @@ CoeffF = function(j) #Поправка на коэфф
   
   alpha[1] = k1
   beta[1] = A(tj[j])
-  Ai[1] = - kU(U[j,1]) / h^2
-  Bi[1] = - kU(U[j,1]) / h^2
-  Ci[1] = CU(U[j,1]) / tau + 2 * kU(U[j,1]) / h^2
   
-  for(i in 2:(N-1)) # Считаем очередные Ai, Bi , Ci
+  for(i in 1:(N-1)) # Считаем очередные Ai, Bi , Ci
   {
-    Ai[i] = - kU(U[j,i-1]) / h^2
-    Bi[i] = - kU(U[j,i+1]) / h^2
-    Ci[i] = CU(U[j,i]) / tau + (kU(U[j,i+1]) + kU(U[j,i-1]))  / h^2
+    Ai[i] = - kU(U[j,i]) / h^2
+    Bi[i] = - kU(U[j,i]) / h^2
+    Ci[i] = CU(U[j,i]) / tau + 2 * kU(U[j,i]) / h^2
   }
   
   for(i in 1:(N-1)) #Считаем Fi
@@ -141,42 +138,39 @@ CoeffF = function(j) #Поправка на коэфф
 IterF = function(j) #Считаем остальные слои
 {
   
-alpha[1] = k1
-beta[1] = A(tj[j])
-Ai[1] = - kU(U[j-1,1]) / h^2
-Bi[1] = - kU(U[j-1,1]) / h^2
-Ci[1] = CU(U[j-1,1]) / tau + 2 * kU(U[j-1,1]) / h^2
-
-for(i in 2:(N-1)) # Считаем очередные Ai, Bi , Ci
-{
-  Ai[i] = - kU(U[j-1,i-1]) / h^2
-  Bi[i] = - kU(U[j-1,i+1]) / h^2
-  Ci[i] = CU(U[j-1,i]) / tau + (kU(U[j-1,i+1]) + kU(U[j-1,i-1]))  / h^2
-}
-
-for(i in 1:(N-1)) #Считаем Fi
-Fi[i] = CU(U[j-1,i])*U[j-1,i+1]/tau
-
-
-for(i in 2:N) #Считаем альфа и бета коэффициенты
-{
-alpha[i]=-Bi[i-1]/(Ci[i-1]+Ai[i-1]*alpha[i-1])
-beta[i]= (Fi[i-1]-Ai[i-1]*beta[i-1])/(Ci[i-1]+Ai[i-1]*alpha[i-1])
-}
-
-U[j,N+1]=(B(tj[j])+k2*beta[N])/(1-k2*alpha[N])
-
-for(i in N:1) #Считаем Uj
-  U[j,i]= alpha[i] * U[j,i+1] + beta[i]
-#U[j,1]=k1*U[j,2]-h*A(tj[j])
-
-return(U[j,])
+  alpha[1] = k1
+  beta[1] = A(tj[j])
+  
+  for(i in 1:(N-1)) # Считаем очередные Ai, Bi , Ci
+  {
+    Ai[i] = - kU(U[j-1,i]) / h^2
+    Bi[i] = - kU(U[j-1,i]) / h^2
+    Ci[i] = CU(U[j-1,i]) / tau + 2 * kU(U[j-1,i]) / h^2
+  }
+  
+  for(i in 1:(N-1)) #Считаем Fi
+    Fi[i] = CU(U[j-1,i])*U[j-1,i+1]/tau
+  
+  
+  for(i in 2:N) #Считаем альфа и бета коэффициенты
+  {
+    alpha[i]=-Bi[i-1]/(Ci[i-1]+Ai[i-1]*alpha[i-1])
+    beta[i]= (Fi[i-1]-Ai[i-1]*beta[i-1])/(Ci[i-1]+Ai[i-1]*alpha[i-1])
+  }
+  
+  U[j,N+1]=(B(tj[j])+k2*beta[N])/(1-k2*alpha[N])
+  
+  for(i in N:1) #Считаем Uj
+    U[j,i]= alpha[i] * U[j,i+1] + beta[i]
+  #U[j,1]=k1*U[j,2]-h*A(tj[j])
+  
+  return(U[j,])
 }
 
 for(j in 2:n)
 {
   U[j,] = IterF(j)
-  #U[j,] = CoeffF(j)
+  U[j,] = CoeffF(j)
 }
 
 # Uacc = matrix(data=NA,nrow=n,ncol=N+1)
@@ -204,8 +198,8 @@ for(j in 2:n)
 
 
 options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
-print("Численное решение")
-print(U)
+#print("Численное решение")
+#print(U)
 #print("Точное решение")
 #print(Uacc)
 
