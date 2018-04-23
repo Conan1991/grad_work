@@ -1,3 +1,6 @@
 
 ~$мпературопроводность.doc
 *.bak
+.Rhistory
+.RData
+.Rhistory
