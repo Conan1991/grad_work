@@ -9,13 +9,15 @@ k1_U = 2.3
 k2_U = 0.58
 density1  = 918.7
 density2 = 999.7
-mean_density= mean(c(density1,density2))
+#mean_density= mean(c(density1,density2))
 
 
-c1_U = 2000 * mean_density
-c2_U = 4195 * mean_density
+c1_U = 2000 * density1
+c2_U = 4195 * density2
+mean_K = mean(c(k1_U,k2_U))
+mean_C = mean(c(c1_U,c2_U))
 #c2_U = c1_U
-a=(k1_U/c1_U)^(1/2)
+a=(mean_K/mean_C)^(1/2)
 h = 0.00035 #шаг по x
 #print(h)
 tau = h^2/a^2
@@ -111,13 +113,23 @@ CoeffF = function(j) #Поправка на коэфф
   
   alpha[1] = k1
   beta[1] = A(tj[j])
+  Ai[1] = - kU(U[j,1]) / h^2
+  Bi[1] = - kU(U[j,1]) / h^2
+  Ci[1] = CU(U[j,1]) / tau + 2 * kU(U[j,1]) / h^2
   
-  for(i in 1:(N-1)) # Считаем очередные Ai, Bi , Ci
+  for(i in 2:(N-1)) # Считаем очередные Ai, Bi , Ci
   {
-    Ai[i] = - kU(U[j,i]) / h^2
-    Bi[i] = - kU(U[j,i]) / h^2
-    Ci[i] = CU(U[j,i]) / tau + 2 * kU(U[j,i]) / h^2
+    Ai[i] = - kU(U[j,i-1]) / h^2
+    Bi[i] = - kU(U[j,i+1]) / h^2
+    Ci[i] = CU(U[j,i]) / tau + (kU(U[j,i+1]) + kU(U[j,i-1]))  / h^2
   }
+  
+  # for(i in 1:(N-1)) # Считаем очередные Ai, Bi , Ci
+  # {
+  #   Ai[i] = - kU(U[j,i]) / h^2
+  #   Bi[i] = - kU(U[j,i]) / h^2
+  #   Ci[i] = CU(U[j,i]) / tau + 2 * kU(U[j,i]) / h^2
+  # }
   
   for(i in 1:(N-1)) #Считаем Fi
     Fi[i] = CU(U[j,i]) * U[j-1,i+1] / tau
