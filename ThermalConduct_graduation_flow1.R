@@ -18,22 +18,13 @@ mean_C = mean(c(c1_U,c2_U))
 #c2_U = c1_U
 a=(mean_K/mean_C)^(1/2)
 h = 0.00035 #шаг по x
-#print(h)
 tau = h^2/a^2
-
-
 
 L = 0.006 #длина
 N = round(L/h) #Число шагов
 n = 150 #Число шагов по времени
 tj = numeric(n) #tau j
 nj = numeric(n) #ветор моментов времени
-
-# k2_U= 1
-# k1_U= 1
-# 
-# c2_U = 1
-# c1_U = 1
 
 kU = function(U_i)
 {
@@ -62,9 +53,6 @@ B = function(t)
   #1/(1+t)
   10
 }
-
-
-
 
 x = numeric(N+1)
 fij = numeric(N+1) #сила
