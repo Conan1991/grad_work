@@ -3,17 +3,16 @@ rm(list = ls())
 #k1=k2=1
 k1=k2=0
 
-
 k1_U = 2.3
 #k2_U = k1_U
 k2_U = 0.58
-density1  = 918.7
-density2 = 999.7
+density_1  = 918.7
+density_2 = 999.7
 #mean_density= mean(c(density1,density2))
 
 
-c1_U = 2000 * density1
-c2_U = 4195 * density2
+c1_U = 2000 * density_1
+c2_U = 4195 * density_2
 mean_K = mean(c(k1_U,k2_U))
 mean_C = mean(c(c1_U,c2_U))
 #c2_U = c1_U
