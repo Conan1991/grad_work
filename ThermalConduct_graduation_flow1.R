@@ -111,12 +111,15 @@ CoeffF = function(j) #Поправка на коэфф
   
   alpha[1] = k1
   beta[1] = A(tj[j])
+  Ai[1] = - kU(U[j,1]) / h^2
+  Bi[1] = - kU(U[j,1]) / h^2
+  Ci[1] = CU(U[j,1]) / tau + 2 * kU(U[j,1]) / h^2
   
-  for(i in 1:N) # Считаем очередные Ai, Bi , Ci
+  for(i in 2:(N-1)) # Считаем очередные Ai, Bi , Ci
   {
-    Ai[i] = - kU(U[j,i]) / h^2
-    Bi[i] = - kU(U[j,i]) / h^2
-    Ci[i] = CU(U[j,i]) / tau + 2 * kU(U[j,i]) / h^2
+    Ai[i] = - kU(U[j,i-1]) / h^2
+    Bi[i] = - kU(U[j,i+1]) / h^2
+    Ci[i] = CU(U[j,i]) / tau + (kU(U[j,i+1]) + kU(U[j,i-1]))  / h^2
   }
   
   for(i in 1:(N-1)) #Считаем Fi
@@ -140,12 +143,15 @@ IterF = function(j) #Считаем остальные слои
   
 alpha[1] = k1
 beta[1] = A(tj[j])
+Ai[1] = - kU(U[j-1,1]) / h^2
+Bi[1] = - kU(U[j-1,1]) / h^2
+Ci[1] = CU(U[j-1,1]) / tau + 2 * kU(U[j-1,1]) / h^2
 
-for(i in 1:N) # Считаем очередные Ai, Bi , Ci
+for(i in 2:(N-1)) # Считаем очередные Ai, Bi , Ci
 {
-  Ai[i] = - kU(U[j-1,i]) / h^2
-  Bi[i] = - kU(U[j-1,i]) / h^2
-  Ci[i] = CU(U[j-1,i]) / tau + 2 * kU(U[j-1,i]) / h^2
+  Ai[i] = - kU(U[j-1,i-1]) / h^2
+  Bi[i] = - kU(U[j-1,i+1]) / h^2
+  Ci[i] = CU(U[j-1,i]) / tau + (kU(U[j-1,i+1]) + kU(U[j-1,i-1]))  / h^2
 }
 
 for(i in 1:(N-1)) #Считаем Fi
