@@ -3,19 +3,23 @@ rm(list = ls())
 #k1=k2=1
 k1=k2=0
 
-k1_U = 2.3
+k1_U = 2.3 #Теплопроводность льда
 #k2_U = k1_U
-k2_U = 0.58
-density_1  = 918.7
-density_2 = 999.7
+k2_U = 0.58 #Теплопроводность воды
+
+density_1  = 918.7 #Плотность льда
+density_2 = 999.7 #Плотность воды
 #mean_density= mean(c(density1,density2))
+с1 = 2000 #Теплоёмкость льда
+с2 = 4195 #Теплоёмкость воды
 
+c1_U = с1 * density_1 
+c2_U = с2 * density_2 
+#c2_U = c1_U
 
-c1_U = 2000 * density_1
-c2_U = 4195 * density_2
 mean_K = mean(c(k1_U,k2_U))
 mean_C = mean(c(c1_U,c2_U))
-#c2_U = c1_U
+
 a=(mean_K/mean_C)^(1/2)
 h = 0.00035 #шаг по x
 tau = h^2/a^2
@@ -172,51 +176,36 @@ for(j in 2:n)
   U[j,] = CoeffF(j)
 }
 
-# Uacc = matrix(data=NA,nrow=n,ncol=N+1)
-# colnames(Uacc)=x
-# row.names(Uacc)= c(0:(n-1))
-# 
-# summm=function(x,t)
-# {
-# summ=0
-#      for(k in 1:10000)
-#      {
-#         #summ= summ + 1/(2*k-1)^3*sin((2*k-1)*pi*x/L) * exp(-(2*k-1)^2*pi^2*a^2*t/L^2)
-#         #if(k==10) print(summ)
-#        summ= summ + (-1)^(k+1)/k^2*exp(-k^2*pi^2*a^2*t/L^2)*cos(k*pi*x/L)
-#      }
-# return(summ)
-# }
-# 
-# 
-# for(ix in 1:(N+1))
-#   for(it in 1:n) {
-#     #Uacc[it,ix]=A(tj[it]) + (B(tj[it]) - A(tj[it])) * x[ix]/L - 8*(B(tj[it])-A(tj[it]))/pi^3 * summm(x[ix], tj[it])
-#     Uacc[it,ix]=B(tj[it])*(a^2*tj[it]/L+(3*x[ix]^2-L^2)/(6*L))+2*L/pi^2*summm(x[ix], tj[it])
-# }
-
-
 options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
 #print("Численное решение")
 #print(U)
 #print("Точное решение")
 #print(Uacc)
+RESULTS_DIRECTORY <- "../Results/"
 
 library(animation)
 oopt = ani.options(interval = 0.3)
-
 ani.record(reset = TRUE)
+
 for(j in 1:n)
 {
   plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
   lines(U[j,],col="red")
+  if(j == 1 || j %% 25 == 0 || j == 2 )
+  {
+    file.path = paste(RESULTS_DIRECTORY, "result_", j, ".bmp", sep = "")
+    bmp(file.path)
+    plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
+    lines(U[j,],col="red")
+    axis(1, at = c(1:(N+1)), labels = x)
+    dev.off()
+  }
   #lines(Uacc[j,],col="blue")
   axis(1, at = c(1:(N+1)), labels = x)
   ani.pause()
   ani.record()
   
 }
-
 
 
 # while(TRUE)
