@@ -1,4 +1,5 @@
 rm(list = ls())
+setwd(getwd()) # Set the working directory
 
 #k1=k2=1
 k1=k2=0
@@ -154,7 +155,6 @@ IterF = function(j) #Считаем остальные слои
   for(i in 1:(N-1)) #Считаем Fi
     Fi[i] = CU(U[j-1,i])*U[j-1,i+1]/tau
   
-  
   for(i in 2:N) #Считаем альфа и бета коэффициенты
   {
     alpha[i]=-Bi[i-1]/(Ci[i-1]+Ai[i-1]*alpha[i-1])
@@ -173,7 +173,7 @@ IterF = function(j) #Считаем остальные слои
 for(j in 2:n)
 {
   U[j,] = IterF(j)
-  U[j,] = CoeffF(j)
+  #U[j,] = CoeffF(j)
 }
 
 options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
@@ -182,6 +182,12 @@ options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
 #print("Точное решение")
 #print(Uacc)
 RESULTS_DIRECTORY <- "../Results/"
+
+file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx", ".csv", sep = "")
+#write.matrix(U , file = file.path, sep = ";")
+#options(digits = 4)
+Uacc = format(U, digits = 4)
+write.table(Uacc , file = file.path, sep = ";")
 
 library(animation)
 oopt = ani.options(interval = 0.3)
