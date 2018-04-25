@@ -173,7 +173,7 @@ IterF = function(j) #Считаем остальные слои
 for(j in 2:n)
 {
   U[j,] = IterF(j)
-  #U[j,] = CoeffF(j)
+  U[j,] = CoeffF(j)
 }
 
 options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
