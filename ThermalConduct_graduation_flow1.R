@@ -2,6 +2,7 @@ rm(list = ls())
 setwd(getwd()) # Set the working directory
 
 #k1=k2=1
+#
 k1=k2=0
 
 k1_U = 2.3 #Теплопроводность льда
