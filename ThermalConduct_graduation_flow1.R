@@ -23,12 +23,12 @@ mean_K = mean(c(k1_U,k2_U))
 mean_C = mean(c(c1_U,c2_U))
 
 a=(mean_K/mean_C)^(1/2)
-h = 0.00035 #шаг по x
+h = 0.00045 #шаг по x
 tau = h^2/a^2
 
-L = 0.006 #длина
+L = 0.008 #длина
 N = round(L/h) #Число шагов
-n = 150 #Число шагов по времени
+n = 100 #Число шагов по времени
 tj = numeric(n) #tau j
 nj = numeric(n) #ветор моментов времени
 
@@ -187,14 +187,14 @@ RESULTS_DIRECTORY <- "../Results/"
 file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx", ".csv", sep = "")
 #write.matrix(U , file = file.path, sep = ";")
 #options(digits = 4)
-Uacc = format(U, digits = 4)
-write.table(Uacc , file = file.path, sep = ";")
+#Uacc = format(U, digits = 4)
+#write.table(Uacc , file = file.path, sep = ";")
 
 library(animation)
 oopt = ani.options(interval = 0.3)
 ani.record(reset = TRUE)
 
-for(j in 1:n)
+for(j in 2:n)
 {
   plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
   lines(U[j,],col="red")
