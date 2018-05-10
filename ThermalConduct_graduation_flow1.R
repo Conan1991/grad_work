@@ -103,7 +103,6 @@ for(i in 0:N+1) #Считаем 0-й слой
 
 CoeffF = function(j) #Поправка на коэфф
 {
-  
   alpha[1] = k1
   beta[1] = A(tj[j])
   Ai[1] = - kU(U[j,1]) / h^2
@@ -116,13 +115,6 @@ CoeffF = function(j) #Поправка на коэфф
     Bi[i] = - kU(U[j,i+1]) / h^2
     Ci[i] = CU(U[j,i]) / tau + (kU(U[j,i+1]) + kU(U[j,i-1]))  / h^2
   }
-  
-  # for(i in 1:(N-1)) # Считаем очередные Ai, Bi , Ci
-  # {
-  #   Ai[i] = - kU(U[j,i]) / h^2
-  #   Bi[i] = - kU(U[j,i]) / h^2
-  #   Ci[i] = CU(U[j,i]) / tau + 2 * kU(U[j,i]) / h^2
-  # }
   
   for(i in 1:(N-1)) #Считаем Fi
     Fi[i] = CU(U[j,i]) * U[j-1,i+1] / tau
