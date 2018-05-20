@@ -15,6 +15,8 @@ density_2 = 999.7 #Плотность воды
 heat_capacity1 = 2000 #Теплоёмкость льда
 heat_capacity2 = 4195 #Теплоёмкость воды
 
+heat_of_fusion = 334000
+
 c1_U = heat_capacity1 * density_1 
 c2_U = heat_capacity2 * density_2 
 #c2_U = c1_U
@@ -24,13 +26,13 @@ mean_C = mean(c(c1_U,c2_U))
 
 a=(mean_K/mean_C)^(1/2)
 h = 0.00045 #шаг по x
-tau = h^2/a^2
+tau = h^2/a^2 #шаг по времени
 
 L = 0.008 #длина
 N = round(L/h) #Число шагов
-n = 100 #Число шагов по времени
-tj = numeric(n) #tau j
-nj = numeric(n) #ветор моментов времени
+M = 100 #Число шагов по времени
+tj = numeric(M) #tau j
+nj = numeric(M) #ветор моментов времени
 
 kU = function(U_i)
 {
@@ -72,7 +74,7 @@ Fi = numeric(N-1)
 alpha = numeric(N)
 beta = numeric(N)
 
-for(j in 1:n)
+for(j in 1:M)
 {
   tj[j]=(j-1)*tau
   nj[j]=j-1
@@ -93,9 +95,9 @@ for(i in 1:N+1)
   fij[i]=0
 }
 
-U = matrix(data=NA,nrow=n,ncol=N+1)
+U = matrix(data=NA,nrow=M,ncol=N+1)
 colnames(U)=x
-row.names(U)= c(0:(n-1))
+row.names(U)= c(0:(M-1))
 
 
 for(i in 0:N+1) #Считаем 0-й слой
@@ -165,7 +167,7 @@ IterF = function(j) #Считаем остальные слои
   return(U[j,])
 }
 
-for(j in 2:n)
+for(j in 2:M)
 {
   U[j,] = IterF(j)
   U[j,] = CoeffF(j)
@@ -188,7 +190,7 @@ library(animation)
 oopt = ani.options(interval = 0.3)
 ani.record(reset = TRUE)
 
-for(j in 2:n)
+for(j in 2:M)
 {
   plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
   lines(U[j,],col="red")
