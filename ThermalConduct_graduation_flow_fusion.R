@@ -5,9 +5,9 @@ setwd(getwd()) # Set the working directory
 ##
 k1=k2=0
 
-k1_U = 2.3 #Теплопроводность льда
+thermal_conductivity1 = 2.3 #Теплопроводность льда
 #k2_U = k1_U
-k2_U = 0.58 #Теплопроводность воды
+thermal_conductivity2 = 0.58 #Теплопроводность воды
 
 density_1  = 918.7 #Плотность льда
 density_2 = 999.7 #Плотность воды
@@ -17,41 +17,44 @@ heat_capacity2 = 4195 #Теплоёмкость воды
 
 heat_of_fusion = 334000
 
-c1_U = heat_capacity1 * density_1 
-c2_U = heat_capacity2 * density_2 
+cp1 = heat_capacity1 * density_1 
+cp2 = heat_capacity2 * density_2 
 #c2_U = c1_U
 
-mean_K = mean(c(k1_U,k2_U))
-mean_C = mean(c(c1_U,c2_U))
+mean_K = mean(c(thermal_conductivity1,thermal_conductivity2))
+mean_C = mean(c(cp1,cp2))
 
 a=(mean_K/mean_C)^(1/2)
-h = 0.00045 #шаг по x
-tau = h^2/a^2 #шаг по времени
+h = 0.00045 /4  #шаг по x
+tau = h^2/a^2 / 16 #шаг по времени
 
 L = 0.008 #длина
 N = round(L/h) #Число шагов
-M = 100 #Число шагов по времени
+M = 100 *16 #Число шагов по времени
 tj = numeric(M) #tau j
 nj = numeric(M) #ветор моментов времени
 
 kU = function(U_i)
 {
   if( U_i < 0)
-    return(k1_U)
-  else return(k2_U)
+    return(thermal_conductivity1)
+  return(thermal_conductivity2)
 }
-delta = 1
+
+#delta = 0.2355
+delta = h*2
+#delta = heat_of_fusion/2/cp1*h
 
 CU = function(U_i)
 {
   if (U_i < 0 && U_i > -delta)
-    return(c1_U + heat_of_fusion/(2*delta))
+    return(cp1 + heat_of_fusion/(2*delta)*density_1)
   if( U_i < 0)
-    return(c1_U)
+    return(cp1)
   if(U_i > 0 && U_i < delta)
-    return(c2_U + heat_of_fusion/(2*delta))
+    return(cp2 + heat_of_fusion/(2*delta)*density_2)
   if(U_i > 0 )
-  return(c2_U)
+    return(cp2)
 }
 
 
