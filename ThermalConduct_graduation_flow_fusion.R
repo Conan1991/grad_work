@@ -40,12 +40,18 @@ kU = function(U_i)
     return(k1_U)
   else return(k2_U)
 }
+delta = 1
 
 CU = function(U_i)
 {
+  if (U_i < 0 && U_i > -delta)
+    return(c1_U + heat_of_fusion/(2*delta))
   if( U_i < 0)
     return(c1_U)
-  else return(c2_U)
+  if(U_i > 0 && U_i < delta)
+    return(c2_U + heat_of_fusion/(2*delta))
+  if(U_i > 0 )
+  return(c2_U)
 }
 
 
