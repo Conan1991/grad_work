@@ -34,16 +34,30 @@ M = 100 *4 #Число шагов по времени
 tj = numeric(M) #tau j
 nj = numeric(M) #ветор моментов времени
 
-kU = function(U_i)
+delta = 0.2525 #step by h/2
+#delta = 1.225  #step by h
+#delta = heat_of_fusion/2/cp1*h
+
+kU = function(U_i, i)
 {
+  if (U_i < 0 && U_i > -delta)
+  {
+    return(thermal_conductivity2 + i/M*(thermal_conductivity1 - thermal_conductivity2))
+  }
   if( U_i < 0)
+  {
     return(thermal_conductivity1)
-  return(thermal_conductivity2)
+  }
+  if(U_i > 0 && U_i < delta)
+  {
+    return(thermal_conductivity2 + i/M*(thermal_conductivity1 - thermal_conductivity2))
+  }
+  if(U_i > 0 )
+  {
+    return(thermal_conductivity2)
+  }
 }
 
-delta = 0.2525 #step by h/2
-#delta = 1  #step by h
-#delta = heat_of_fusion/2/cp1*h
 
 CU = function(U_i)
 {
@@ -118,17 +132,18 @@ CoeffF = function(j) #Поправка на коэфф
 {
   alpha[1] = k1
   beta[1] = A(tj[j])
-  Ai[1] = - kU(U[j,1]) / h^2
-  Bi[1] = - kU(U[j,1]) / h^2
-  Ci[1] = CU(U[j,1]) / tau + 2 * kU(U[j,1]) / h^2
+  Ai[1] = - kU(U[j,1], j) / h^2
+  Bi[1] = - kU(U[j,1], j) / h^2
+  Ci[1] = CU(U[j,1]) / tau + 2 * kU(U[j,1],j) / h^2
   
   for(i in 2:(N-1)) # Считаем очередные Ai, Bi , Ci
   {
-    Ai[i] = - kU(U[j,i-1]) / h^2
-    Bi[i] = - kU(U[j,i+1]) / h^2
-    Ci[i] = CU(U[j,i]) / tau + (kU(U[j,i+1]) + kU(U[j,i-1]))  / h^2
+    Ai[i] = - kU(U[j,i-1], j) / h^2
+    Bi[i] = - kU(U[j,i+1],j) / h^2
+    Ci[i] = CU(U[j,i]) / tau + (kU(U[j,i+1], j) + kU(U[j,i-1], j))  / h^2
   }
   
+  #print(kU(U[j,i-1], j))
   for(i in 1:(N-1)) #Считаем Fi
     Fi[i] = CU(U[j,i]) * U[j-1,i+1] / tau
   
@@ -153,9 +168,9 @@ IterF = function(j) #Считаем остальные слои
   
   for(i in 1:(N-1)) # Считаем очередные Ai, Bi , Ci
   {
-    Ai[i] = - kU(U[j-1,i]) / h^2
-    Bi[i] = - kU(U[j-1,i]) / h^2
-    Ci[i] = CU(U[j-1,i]) / tau + 2 * kU(U[j-1,i]) / h^2
+    Ai[i] = - kU(U[j-1,i], j) / h^2
+    Bi[i] = - kU(U[j-1,i], j) / h^2
+    Ci[i] = CU(U[j-1,i]) / tau + 2 * kU(U[j-1,i], j) / h^2
   }
   
   for(i in 1:(N-1)) #Считаем Fi
@@ -189,7 +204,7 @@ options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
 #print(Uacc)
 RESULTS_DIRECTORY <- "../Results/"
 
-file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx", ".csv", sep = "")
+file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx_final_h_devide_2", ".csv", sep = "")
 #write.matrix(U , file = file.path, sep = ";")
 #options(digits = 4)
 Uacc = format(U, digits = 4)
