@@ -25,7 +25,7 @@ mean_K = mean(c(thermal_conductivity1,thermal_conductivity2))
 mean_C = mean(c(cp1,cp2))
 
 a=(mean_K/mean_C)^(1/2)
-h = 0.00045 /5  #/2 #шаг по x
+h = 0.00045 /5 #/2 #шаг по x
 tau = h^2/a^2 #/ 4 #шаг по времени
 
 L = 0.00153 #длина
@@ -41,8 +41,8 @@ kU = function(U_i)
   return(thermal_conductivity2)
 }
 
-#delta = 0.2355
-delta = 3
+#delta = 0.2335 #step by h/2
+delta = 2 #step by h
 #delta = heat_of_fusion/2/cp1*h
 
 CU = function(U_i)
