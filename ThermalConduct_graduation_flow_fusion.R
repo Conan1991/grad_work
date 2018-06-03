@@ -25,17 +25,17 @@ mean_K = mean(c(thermal_conductivity1,thermal_conductivity2))
 mean_C = mean(c(cp1,cp2))
 
 a=(mean_K/mean_C)^(1/2)
-h = 0.00045 /2  #шаг по x
-tau = h^2/a^2 /4 #шаг по времени
+h = 0.00045 #/2  #шаг по x
+tau = h^2/a^2 #/4 #шаг по времени
 
 L = 0.008 #длина
 N = round(L/h) #Число шагов
-M = 100 *4 #Число шагов по времени
+M = 100 #*4 #Число шагов по времени
 tj = numeric(M) #tau j
 nj = numeric(M) #ветор моментов времени
 
-delta = 0.2525 #step by h/2
-#delta = 1.225  #step by h
+#delta = 0.2525 #step by h/2
+delta = 1.225  #step by h
 #delta = heat_of_fusion/2/cp1*h
 
 kU = function(U_i, i)
@@ -204,7 +204,7 @@ options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
 #print(Uacc)
 RESULTS_DIRECTORY <- "../Results/"
 
-file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx_final_h_devide_2", ".csv", sep = "")
+file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx_final_h", ".csv", sep = "")
 #write.matrix(U , file = file.path, sep = ";")
 #options(digits = 4)
 Uacc = format(U, digits = 4)
