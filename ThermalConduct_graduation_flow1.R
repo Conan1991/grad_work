@@ -174,7 +174,7 @@ options(scipen = 999) # Disable exponential notation (e.g. 1.81e+09)
 #print(U)
 #print("Точное решение")
 #print(Uacc)
-RESULTS_DIRECTORY <- "../Results/"
+RESULTS_DIRECTORY <- "../GradResults/"
 
 file.path = paste(RESULTS_DIRECTORY, "result_", "matrixx", ".csv", sep = "")
 #write.matrix(U , file = file.path, sep = ";")
@@ -183,28 +183,28 @@ Uacc = format(U, digits = 4)
 write.table(Uacc, file = file.path, sep = ";")
 
 library(animation)
-oopt = ani.options(interval = 0.3)
-ani.record(reset = TRUE)
+#oopt = ani.options(interval = 0.3)
+#ani.record(reset = TRUE)
 
-for(j in 2:n)
-{
-  plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
-  lines(U[j,],col="red")
+#for(j in 2:n)
+#{
+  #plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
+  #lines(U[j,],col="red")
   #if(j == 1 || j %% 25 == 0 || j == 2 )
   #{
-    file.path = paste(RESULTS_DIRECTORY, "result_", j, ".bmp", sep = "")
-    bmp(file.path)
-    plot(U[j,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
-    lines(U[j,],col="red")
+    #file.path = paste(RESULTS_DIRECTORY, "result_", j, ".bmp", sep = "")
+    #bmp(file.path)
+    plot(U[n,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
+    lines(U[n,],col="red")
     axis(1, at = c(1:(N+1)), labels = x)
-    dev.off()
+    #dev.off()
   #}
   #lines(Uacc[j,],col="blue")
-  axis(1, at = c(1:(N+1)), labels = x)
-  ani.pause()
-  ani.record()
+  #axis(1, at = c(1:(N+1)), labels = x)
+  #ani.pause()
+  #ani.record()
   
-}
+#}
 
 # while(TRUE)
 # { 
