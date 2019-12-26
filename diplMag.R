@@ -165,9 +165,9 @@ rows = length(x)
 cols = ncol(temperature)
 y = x
 
-step_x = 0.5
-step_y = 0.5
-step_t = 0.5
+step_x = 0.00045
+step_y = 0.00045
+step_t = (step_x^2/lambda)/10000
 
 shiftU = shiftV = matrix(data = 0, nrow = rows, ncol = cols)
 colnames(shiftU)= colnames(shiftV) = x
@@ -181,13 +181,13 @@ SHIFTS_V = list(shiftV)
 
 
 
-for (t in 2:15) {
+for (t in 2:2000) {
   for(i in 2:(rows-1))
   {
     for(j in 2:(cols-1))
     {
       shiftU[i,j] = step_t*((lambda+2*nu)*(SHIFTS_U[[t-1]][i+1,j]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_V[[t-1]][i+1,j+1]-SHIFTS_V[[t-1]][i-1,j+1]-SHIFTS_V[[t-1]][i+1,j-1]+SHIFTS_V[[t-1]][i-1,j-1])/(4*step_x*step_y)+nu*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[i+1,j]-temperature[i-1,j])/(2*step_x))+SHIFTS_U[[t-1]][i,j]
-      shiftV[i,j] = step_t*(nu*(SHIFTS_V[[t-1]][i+1,j]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_U[[t-1]][i+1,j+1]-SHIFTS_U[[t-1]][i-1,j+1]-SHIFTS_U[[t-1]][i+1,j-1]+SHIFTS_U[[t-1]][i-1,j-1])/(4*step_x*step_y)+(lambda+2*nu)*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[i+1,j]-temperature[i-1,j])/(2*step_y))+SHIFTS_V[[t-1]][i,j]
+      shiftV[i,j] = step_t*(nu*(SHIFTS_V[[t-1]][i+1,j]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_U[[t-1]][i+1,j+1]-SHIFTS_U[[t-1]][i-1,j+1]-SHIFTS_U[[t-1]][i+1,j-1]+SHIFTS_U[[t-1]][i-1,j-1])/(4*step_x*step_y)+(lambda+2*nu)*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[i,j+1]-temperature[i,j-1])/(2*step_y))+SHIFTS_V[[t-1]][i,j]
     }
   }
   SHIFTS_U[[t]] = shiftU
@@ -198,13 +198,14 @@ for (t in 2:15) {
 for (t in 2:4)
   for(i in 2:(rows-1))
   {
-    SHIFTS_U[[t]][i,1]=step_y/2/step_x*(SHIFTS_V[[t]][i+1,2]-SHIFTS_V[[t]][i-1,2]) + SHIFTS_U[[t]][i,2]
-    SHIFTS_V[[t]][i,1] = lambda*step_y/2/step_x*(SHIFTS_U[[t]][i+1,2]-SHIFTS_U[[t]][i-1,2])/(lambda+2*nu)-3*lambda*alpha*step_y*temperature[i,1]/(lambda+2*nu)+SHIFTS_V[[t]][i,2]
-    SHIFTS_U[[t]][i,cols]= SHIFTS_U[[t]][i, cols-1] - step_y/2/step_x*(SHIFTS_V[[t]][i+1,cols]-SHIFTS_V[[t]][i-1,cols])
-    SHIFTS_V[[t]][i,cols]= SHIFTS_V[[t]][i, cols-1] - lambda*step_y/2/step_x*(SHIFTS_U[[t]][i+1,cols]-SHIFTS_U[[t]][i-1,cols])/(lambda+2*nu)+3*lambda*alpha*step_y*temperature[i,cols]/(lambda+2*nu)
+    SHIFTS_U[[t]][i,1]=step_y/(2*step_x)*(SHIFTS_V[[t]][i+1,2]-SHIFTS_V[[t]][i-1,2]) + SHIFTS_U[[t]][i,2]
+    SHIFTS_V[[t]][i,1] = lambda*step_y/(2*step_x)*(SHIFTS_U[[t]][i+1,2]-SHIFTS_U[[t]][i-1,2])/(lambda+2*nu)-3*lambda*alpha*step_y*temperature[i,1]/(lambda+2*nu)+SHIFTS_V[[t]][i,2]
+    SHIFTS_U[[t]][i,cols]= SHIFTS_U[[t]][i, cols-1] - step_y/(2*step_x)*(SHIFTS_V[[t]][i+1,cols]-SHIFTS_V[[t]][i-1,cols])
+    SHIFTS_V[[t]][i,cols]= SHIFTS_V[[t]][i, cols-1] - lambda*step_y/(2*step_x)*(SHIFTS_U[[t]][i+1,cols]-SHIFTS_U[[t]][i-1,cols])/(lambda+2*nu)+3*lambda*alpha*step_y*temperature[i,cols]/(lambda+2*nu)
 #print(SHIFTS_U[[t]][i,1])
   }
 
 
-plot(SHIFTS_U[[2]][2,], xaxt="n")
+plot(SHIFTS_U[[2000]][2,], xaxt="n")
 axis(1, at = c(1:(cols)), labels = x)
+lines(SHIFTS_U[[2000]][2,],col="red")
