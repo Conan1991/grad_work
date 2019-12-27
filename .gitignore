@@ -5,3 +5,6 @@
 *.RData
 *.Rhistory
 *.docx
+.Rhistory
+.RData
+.RData

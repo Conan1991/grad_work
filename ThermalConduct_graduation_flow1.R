@@ -194,9 +194,9 @@ library(animation)
   #{
     #file.path = paste(RESULTS_DIRECTORY, "result_", j, ".bmp", sep = "")
     #bmp(file.path)
-    plot(U[n,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
-    lines(U[n,],col="red")
-    axis(1, at = c(1:(N+1)), labels = x)
+    #plot(U[n,], xaxt="n", xlab = 'X values', ylab = 'U[x,t] values')
+    #lines(U[n,],col="red")
+    #axis(1, at = c(1:(N+1)), labels = x)
     #dev.off()
   #}
   #lines(Uacc[j,],col="blue")
