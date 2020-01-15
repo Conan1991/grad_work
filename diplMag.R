@@ -160,6 +160,8 @@ temperature = ThermalConduct()
 lambda =  0.1
 alpha = 0.33
 nu = 0.25
+epsilon = 0.01
+number_of_iterations = 10000
 
 rows = length(x)
 cols = ncol(temperature)
@@ -179,9 +181,54 @@ SHIFTS_V = list(shiftV)
 
 #fill 0 layer
 
+checkResidual = function(U, it)
+{
+  MIN_RESIDUAL = 10000
+  max_residuals=numeric()
+  for (t in it:number_of_iterations) {
+    residuals = numeric()
+    
+    for(i in 1:(rows-1))
+    {
+      for(j in 1:(cols-1))
+      {
+        if(abs(U[[t]][i,j]-U[[t-1]][i,j]) == 0)
+          next()
+        #print(abs(U[[t]][i,j]-U[[t-1]][i,j]))
+        residuals <- c(residuals, abs(U[[t]][i,j]-U[[t-1]][i,j]) )
+      }
+    }
+    
+    max_residuals <-c(max_residuals,max(residuals))
+    
+  }
+  print(max_residuals)
+  for(i in 1:length(max_residuals))
+  {
+    maximum = max_residuals[i]
+    if(i!= 1)
+    {
+      if(max_residuals[i] > max_residuals[i-1])
+        return(FALSE)
+      if(maximum < MIN_RESIDUAL)
+        assign("MIN_RESIDUAL", maximum, envir = .GlobalEnv)
+    }
+    
+  }
+  
+  if(tail(max_residuals, n=1) < epsilon)
+  {
+    print(tail(max_residuals, n=1))
+    print("Found minimum residual")
+    return(TRUE)
+  }
+  
+  return(FALSE)
+  
+}
 
 
-for (t in 2:2000) {
+for (t in 2:number_of_iterations) {
   for(i in 2:(rows-1))
   {
     for(j in 2:(cols-1))
@@ -196,16 +243,18 @@ for (t in 2:2000) {
 
 #fit first and last layers
 for (t in 2:4)
-  for(i in 2:(rows-1))
+  for(j in 2:(cols-1))
   {
-    SHIFTS_U[[t]][i,1]=step_y/(2*step_x)*(SHIFTS_V[[t]][i+1,2]-SHIFTS_V[[t]][i-1,2]) + SHIFTS_U[[t]][i,2]
-    SHIFTS_V[[t]][i,1] = lambda*step_y/(2*step_x)*(SHIFTS_U[[t]][i+1,2]-SHIFTS_U[[t]][i-1,2])/(lambda+2*nu)-3*lambda*alpha*step_y*temperature[i,1]/(lambda+2*nu)+SHIFTS_V[[t]][i,2]
-    SHIFTS_U[[t]][i,cols]= SHIFTS_U[[t]][i, cols-1] - step_y/(2*step_x)*(SHIFTS_V[[t]][i+1,cols]-SHIFTS_V[[t]][i-1,cols])
-    SHIFTS_V[[t]][i,cols]= SHIFTS_V[[t]][i, cols-1] - lambda*step_y/(2*step_x)*(SHIFTS_U[[t]][i+1,cols]-SHIFTS_U[[t]][i-1,cols])/(lambda+2*nu)+3*lambda*alpha*step_y*temperature[i,cols]/(lambda+2*nu)
+    SHIFTS_U[[t]][1,j]=lambda*step_x/(2*step_y)*(SHIFTS_V[[t]][2,j+1]-SHIFTS_V[[t]][2,j-1])/(lambda+2*nu) - 3*lambda*alpha*step_x*temperature[1,j]/(lambda+2*nu) + SHIFTS_U[[t]][2,j]
+    SHIFTS_V[[t]][1,j] = step_x/(2*step_y)*(SHIFTS_U[[t]][2,j+1]-SHIFTS_U[[t]][2,j-1])+SHIFTS_V[[t]][2,j]
+    SHIFTS_U[[t]][rows, j]= SHIFTS_U[[t]][rows-1, j] - lambda*step_x/(2*step_y)*(SHIFTS_V[[t]][rows-1, j+1]-SHIFTS_V[[t]][rows-1,j-1])/(lambda+2*nu)+3*lambda*alpha*step_x*temperature[rows,j]/(lambda+2*nu)
+    SHIFTS_V[[t]][rows , j]= SHIFTS_V[[t]][rows-1, j] - step_x/(2*step_y)*(SHIFTS_U[[t]][rows-1,j+1]-SHIFTS_U[[t]][rows-1,j-1])
 #print(SHIFTS_U[[t]][i,1])
   }
 
+#print(checkResidual(SHIFTS_U, number_of_iterations - 500))
+print(checkResidual(SHIFTS_V, number_of_iterations - 500))
 
-plot(SHIFTS_U[[2000]][2,], xaxt="n")
+plot(SHIFTS_U[[number_of_iterations]][2,], xaxt="n")
 axis(1, at = c(1:(cols)), labels = x)
-lines(SHIFTS_U[[2000]][2,],col="red")
+lines(SHIFTS_U[[number_of_iterations]][2,],col="red")
