@@ -161,7 +161,7 @@ lambda =  0.1
 alpha = 0.33
 nu = 0.25
 epsilon = 0.01
-number_of_iterations = 10000
+number_of_iterations = 1000
 
 rows = length(x)
 cols = ncol(temperature)
@@ -169,7 +169,7 @@ y = x
 
 step_x = 0.00045
 step_y = 0.00045
-step_t = (step_x^2/lambda)/10000
+step_t = (step_x^2/lambda)/1000
 
 shiftU = shiftV = matrix(data = 0, nrow = rows, ncol = cols)
 colnames(shiftU)= colnames(shiftV) = x
@@ -202,7 +202,7 @@ checkResidual = function(U, it)
     max_residuals <-c(max_residuals,max(residuals))
     
   }
-  print(max_residuals)
+  #print(max_residuals)
   for(i in 1:length(max_residuals))
   {
     maximum = max_residuals[i]
@@ -218,7 +218,7 @@ checkResidual = function(U, it)
   
   if(tail(max_residuals, n=1) < epsilon)
   {
-    print(tail(max_residuals, n=1))
+    #print(tail(max_residuals, n=1))
     print("Found minimum residual")
     return(TRUE)
   }
@@ -233,28 +233,29 @@ for (t in 2:number_of_iterations) {
   {
     for(j in 2:(cols-1))
     {
-      shiftU[i,j] = step_t*((lambda+2*nu)*(SHIFTS_U[[t-1]][i+1,j]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_V[[t-1]][i+1,j+1]-SHIFTS_V[[t-1]][i-1,j+1]-SHIFTS_V[[t-1]][i+1,j-1]+SHIFTS_V[[t-1]][i-1,j-1])/(4*step_x*step_y)+nu*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[i+1,j]-temperature[i-1,j])/(2*step_x))+SHIFTS_U[[t-1]][i,j]
-      shiftV[i,j] = step_t*(nu*(SHIFTS_V[[t-1]][i+1,j]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_U[[t-1]][i+1,j+1]-SHIFTS_U[[t-1]][i-1,j+1]-SHIFTS_U[[t-1]][i+1,j-1]+SHIFTS_U[[t-1]][i-1,j-1])/(4*step_x*step_y)+(lambda+2*nu)*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[i,j+1]-temperature[i,j-1])/(2*step_y))+SHIFTS_V[[t-1]][i,j]
+      shiftU[i,j] = step_t*((lambda+2*nu)*(SHIFTS_U[[t-1]][i+1,j]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_V[[t-1]][i+1,j+1]-SHIFTS_V[[t-1]][i-1,j+1]-SHIFTS_V[[t-1]][i+1,j-1]+SHIFTS_V[[t-1]][i-1,j-1])/(4*step_x*step_y)+nu*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[2,i+1]-temperature[2,i-1])/(2*step_x))+SHIFTS_U[[t-1]][i,j]
+      shiftV[i,j] = step_t*(nu*(SHIFTS_V[[t-1]][i+1,j]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_U[[t-1]][i+1,j+1]-SHIFTS_U[[t-1]][i-1,j+1]-SHIFTS_U[[t-1]][i+1,j-1]+SHIFTS_U[[t-1]][i-1,j-1])/(4*step_x*step_y)+(lambda+2*nu)*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2)+SHIFTS_V[[t-1]][i,j]
     }
+    
   }
   SHIFTS_U[[t]] = shiftU
   SHIFTS_V[[t]] = shiftV
 }
 
 #fit first and last layers
-for (t in 2:4)
+for (t in 2:number_of_iterations)
   for(j in 2:(cols-1))
   {
-    SHIFTS_U[[t]][1,j]=lambda*step_x/(2*step_y)*(SHIFTS_V[[t]][2,j+1]-SHIFTS_V[[t]][2,j-1])/(lambda+2*nu) - 3*lambda*alpha*step_x*temperature[1,j]/(lambda+2*nu) + SHIFTS_U[[t]][2,j]
+    SHIFTS_U[[t]][1,j]=lambda*step_x/(2*step_y)*(SHIFTS_V[[t]][2,j+1]-SHIFTS_V[[t]][2,j-1])/(lambda+2*nu) - 3*lambda*alpha*step_x*temperature[2,1]/(lambda+2*nu) + SHIFTS_U[[t]][2,j]
     SHIFTS_V[[t]][1,j] = step_x/(2*step_y)*(SHIFTS_U[[t]][2,j+1]-SHIFTS_U[[t]][2,j-1])+SHIFTS_V[[t]][2,j]
-    SHIFTS_U[[t]][rows, j]= SHIFTS_U[[t]][rows-1, j] - lambda*step_x/(2*step_y)*(SHIFTS_V[[t]][rows-1, j+1]-SHIFTS_V[[t]][rows-1,j-1])/(lambda+2*nu)+3*lambda*alpha*step_x*temperature[rows,j]/(lambda+2*nu)
+    SHIFTS_U[[t]][rows, j]= SHIFTS_U[[t]][rows-1, j] - lambda*step_x/(2*step_y)*(SHIFTS_V[[t]][rows-1, j+1]-SHIFTS_V[[t]][rows-1,j-1])/(lambda+2*nu)+3*lambda*alpha*step_x*temperature[1,rows]/(lambda+2*nu)
     SHIFTS_V[[t]][rows , j]= SHIFTS_V[[t]][rows-1, j] - step_x/(2*step_y)*(SHIFTS_U[[t]][rows-1,j+1]-SHIFTS_U[[t]][rows-1,j-1])
 #print(SHIFTS_U[[t]][i,1])
   }
 
 #print(checkResidual(SHIFTS_U, number_of_iterations - 500))
-print(checkResidual(SHIFTS_V, number_of_iterations - 500))
+#print(checkResidual(SHIFTS_U, number_of_iterations - 500))
 
-plot(SHIFTS_U[[number_of_iterations]][2,], xaxt="n")
+plot(SHIFTS_U[[500]][2,], xaxt="n")
 axis(1, at = c(1:(cols)), labels = x)
-lines(SHIFTS_U[[number_of_iterations]][2,],col="red")
+lines(SHIFTS_U[[500]][2,],col="red")
