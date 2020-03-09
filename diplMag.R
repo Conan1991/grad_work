@@ -62,8 +62,6 @@ ThermalConduct = function()
     10
   }
   
-  
-  
   for(j in 1:n)
   {
     tj[j]=(j-1)*tau
@@ -161,15 +159,15 @@ lambda =  0.1
 alpha = 0.33
 nu = 0.25
 epsilon = 0.01
-number_of_iterations = 1000
+number_of_iterations = 500
 
 rows = length(x)
 cols = ncol(temperature)
 y = x
 
-step_x = 0.00045
-step_y = 0.00045
-step_t = (step_x^2/lambda)/100
+step_x = 0.00045/2
+step_y = 0.00045/2
+step_t = (step_x^2/lambda)/100*4
 
 shiftU = shiftV = matrix(data = 0, nrow = rows, ncol = cols)
 colnames(shiftU)= colnames(shiftV) = x
@@ -234,7 +232,7 @@ for (t in 2:number_of_iterations) {
     for(j in 2:(cols-1))
     {
       shiftU[i,j] = step_t*((lambda+2*nu)*(SHIFTS_U[[t-1]][i+1,j]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_V[[t-1]][i+1,j+1]-SHIFTS_V[[t-1]][i-1,j+1]-SHIFTS_V[[t-1]][i+1,j-1]+SHIFTS_V[[t-1]][i-1,j-1])/(4*step_x*step_y)+nu*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2-3*lambda*alpha*(temperature[2,i+1]-temperature[2,i-1])/(2*step_x))+SHIFTS_U[[t-1]][i,j]
-      shiftV[i,j] = step_t*(nu*(SHIFTS_V[[t-1]][i+1,j]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_U[[t-1]][i+1,j+1]-SHIFTS_U[[t-1]][i-1,j+1]-SHIFTS_U[[t-1]][i+1,j-1]+SHIFTS_U[[t-1]][i-1,j-1])/(4*step_x*step_y)+(lambda+2*nu)*(SHIFTS_U[[t-1]][i,j-1]-2*SHIFTS_U[[t-1]][i,j]+SHIFTS_U[[t-1]][i,j+1])/step_y^2)+SHIFTS_V[[t-1]][i,j]
+      shiftV[i,j] = step_t*(nu*(SHIFTS_V[[t-1]][i+1,j]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i-1,j])/step_x^2+(lambda+nu)*(SHIFTS_U[[t-1]][i+1,j+1]-SHIFTS_U[[t-1]][i-1,j+1]-SHIFTS_U[[t-1]][i+1,j-1]+SHIFTS_U[[t-1]][i-1,j-1])/(4*step_x*step_y)+(lambda+2*nu)*(SHIFTS_V[[t-1]][i,j-1]-2*SHIFTS_V[[t-1]][i,j]+SHIFTS_V[[t-1]][i,j+1])/step_y^2)+SHIFTS_V[[t-1]][i,j]
     }
     
   }
@@ -243,14 +241,22 @@ for (t in 2:number_of_iterations) {
   ##fit first layers
  for(k in 2:(cols-1))
  {
-   SHIFTS_U[[t]][1,k]=lambda*step_x/(2*step_y)*(SHIFTS_V[[t-1]][2,k+1]-SHIFTS_V[[t-1]][2,k-1])/(lambda+2*nu) - 3*lambda*alpha*step_x*temperature[2,1]/(lambda+2*nu) + SHIFTS_U[[t]][2,k]
-   SHIFTS_V[[t]][1,k] = step_x/(2*step_y)*(SHIFTS_U[[t-1]][2,k+1]-SHIFTS_U[[t-1]][2,k-1])+SHIFTS_V[[t]][2,k]
-   SHIFTS_U[[t]][rows, k]= SHIFTS_U[[t]][rows-1, k] - lambda*step_x/(2*step_y)*(SHIFTS_V[[t-1]][rows-1, k+1]-SHIFTS_V[[t-1]][rows-1,k-1])/(lambda+2*nu)+3*lambda*alpha*step_x*temperature[1,rows]/(lambda+2*nu)
-   SHIFTS_V[[t]][rows , k]= SHIFTS_V[[t]][rows-1, k] - step_x/(2*step_y)*(SHIFTS_U[[t-1]][rows-1,k+1]-SHIFTS_U[[t-1]][rows-1,k-1])
+   SHIFTS_U[[t]][1,k]=lambda*step_x/(2*step_y)*(SHIFTS_V[[t-1]][1,k+1]-SHIFTS_V[[t-1]][1,k-1])/(lambda+2*nu) - 3*lambda*alpha*step_x*temperature[2,1]/(lambda+2*nu) + SHIFTS_U[[t]][2,k]
+   SHIFTS_V[[t]][1,k] = step_x/(2*step_y)*(SHIFTS_U[[t-1]][1,k+1]-SHIFTS_U[[t-1]][1,k-1])+SHIFTS_V[[t]][2,k]
+   SHIFTS_U[[t]][rows, k]= SHIFTS_U[[t]][rows-1, k] - lambda*step_x/(2*step_y)*(SHIFTS_V[[t-1]][rows, k+1]-SHIFTS_V[[t-1]][rows,k-1])/(lambda+2*nu)+3*lambda*alpha*step_x*temperature[1,rows]/(lambda+2*nu)
+   SHIFTS_V[[t]][rows , k]= SHIFTS_V[[t]][rows-1, k] - step_x/(2*step_y)*(SHIFTS_U[[t-1]][rows,k+1]-SHIFTS_U[[t-1]][rows,k-1])
  }
   #cat("Operation=", t ,"\n")
   #print(SHIFTS_U[[t]])
 }
+
+RESULTS_DIRECTORY <- paste(Sys.getenv("HOME"), "\\GitHub\\grad_work\\GradResults\\", sep="");
+
+#options(digits = 6)
+
+#file.path = paste(RESULTS_DIRECTORY, "result_", "matrix", ".csv", sep = "")
+#Uacc = formatC(SHIFTS_U[[number_of_iterations]], digits = 6, format = "f")
+#write.table(Uacc, file = file.path, sep = ";")
 
 #fit first and last layers
 #for (t in 2:number_of_iterations)
@@ -259,6 +265,25 @@ for (t in 2:number_of_iterations) {
 #print(checkResidual(SHIFTS_U, number_of_iterations - 500))
 #print(checkResidual(SHIFTS_U, number_of_iterations - 500))
 
-plot(SHIFTS_U[[100]][2,], xaxt="n")
+ksi11= ksi12= ksi21=ksi22=numeric(number_of_iterations)
+
+for (t in 2:number_of_iterations) {
+  for(i in 2:(rows-1))
+  {
+    for(j in 2:(cols-1))
+    {
+      ksi11[t] = (SHIFTS_U[[t]][i+1][j] - SHIFTS_U[[t]][i-1][j])/(2*step_x)
+      ksi12[t]=ksi21[t] = ((SHIFTS_U[[t]][i][j+1] - SHIFTS_U[[t]][i][j-1])/(2*step_y) - (SHIFTS_V[[t]][i+1][j] - SHIFTS_V[[t]][i-1][j])/(2*step_x))/2
+      ksi22[t] = (SHIFTS_V[[t]][i][j+1] - SHIFTS_V[[t]][i][j-1])/(2*step_y)
+      
+    }
+  }
+}
+
+ksi = list(ksi11,ksi12,ksi21,ksi22)
+
+
+
+plot(SHIFTS_U[[number_of_iterations]][21,], xaxt="n")
 axis(1, at = c(1:(cols)), labels = x)
-lines(SHIFTS_U[[100]][2,],col="red")
+lines(SHIFTS_U[[number_of_iterations]][21,],col="red")
