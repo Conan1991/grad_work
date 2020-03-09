@@ -16,15 +16,37 @@ mean_K = mean(c(k1_U,k2_U))
 mean_C = mean(c(c1_U,c2_U))
 
 a=(mean_K/mean_C)^(1/2)
-h = 0.00045 / 2#шаг по x
-tau = h^2/a^2 / 4
+h = 0.00045 #/ 2#шаг по x
+tau = h^2/a^2 #/ 4
 
 L = 0.008 #длина
 N = round(L/h) #Число шагов
-n = 100 * 4 #Число шагов по времени
+n = 100 #* 4 #Число шагов по времени
 
 x = numeric(N+1)
 
 
 for(i in 1:N+1)
   x[i]= (i-1)*h
+
+
+lambda =  0.1
+alpha = 0.33
+nu = 0.25
+epsilon = 0.01
+number_of_iterations = 2500
+
+rows = length(x)
+cols = length(x)
+y = x
+
+step_x = 0.00045#/2
+step_y = 0.00045#/2
+step_t = (step_x^2/lambda)/100#*4
+
+shiftU = shiftV = matrix(data = 0, nrow = rows, ncol = cols)
+colnames(shiftU)= colnames(shiftV) = x
+row.names(shiftU) = row.names(shiftV) = y
+
+SHIFTS_U = list(shiftU)
+SHIFTS_V = list(shiftV)
