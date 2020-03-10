@@ -146,5 +146,3 @@ ThermalConduct = function()
   
   return(U)
 }
-
-temperature = ThermalConduct()

@@ -34,7 +34,7 @@ lambda =  0.1
 alpha = 0.33
 nu = 0.25
 epsilon = 0.01
-number_of_iterations = 2500
+number_of_iterations = 500
 
 rows = length(x)
 cols = length(x)

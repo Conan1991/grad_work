@@ -247,7 +247,7 @@ for (t in 2:number_of_iterations) {
     for(j in 2:(cols-1))
     {
       ksi11[i,j] = (SHIFTS_U[[t]][i+1, j] - SHIFTS_U[[t]][i-1,j])/(2*step_x)
-      ksi12[i,j]=ksi21[t] = ((SHIFTS_U[[t]][i,j+1] - SHIFTS_U[[t]][i,j-1])/(2*step_y) - (SHIFTS_V[[t]][i+1,j] - SHIFTS_V[[t]][i-1,j])/(2*step_x))/2
+      ksi12[i,j]=ksi21[i,j] = ((SHIFTS_U[[t]][i,j+1] - SHIFTS_U[[t]][i,j-1])/(2*step_y) + (SHIFTS_V[[t]][i+1,j] - SHIFTS_V[[t]][i-1,j])/(2*step_x))/2
       ksi22[i,j] = (SHIFTS_V[[t]][i,j+1] - SHIFTS_V[[t]][i,j-1])/(2*step_y)
       sigma11[i,j] = lambda*(ksi11[i,j]+ksi22[i,j]-3*alpha*temperature[2,i]) + 2*nu*ksi11[i,j]
       sigma12[i,j] = sigma21[i,j] = 2*nu*ksi12[i,j]
