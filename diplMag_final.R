@@ -6,69 +6,35 @@ source('shifts.R')
 
 
 
-temperature = ThermalConduct()
+#temperature = ThermalConduct()
 #fill 0 layer
-SHIFTSU_RESULT = list(shiftU)
-SHIFTSV_RESULT = list(shiftU)
+SHIFTSU_RESULT = list()
+SHIFTSV_RESULT = list()
+ksi_result   = list()
+sigma_result = list()
+U_res=matrix(data = NA, nrow = rows, ncol = cols)
 
 
-checkResidual = function(U, it)
-{
-  MIN_RESIDUAL = 10000
-  max_residuals=numeric()
-  for (t in it:number_of_iterations) {
-    residuals = numeric()
-    
-    for(i in 1:(rows-1))
-    {
-      for(j in 1:(cols-1))
-      {
-        if(abs(U[[t]][i,j]-U[[t-1]][i,j]) == 0)
-          next()
-        #print(abs(U[[t]][i,j]-U[[t-1]][i,j]))
-        residuals <- c(residuals, abs(U[[t]][i,j]-U[[t-1]][i,j]) )
-      }
-    }
-    
-    max_residuals <-c(max_residuals,max(residuals))
-    
-  }
-  print(max_residuals)
-  for(i in 1:length(max_residuals))
-  {
-    maximum = max_residuals[i]
-    if(i!= 1)
-    {
-      if(max_residuals[i] > max_residuals[i-1])
-        return(FALSE)
-      if(maximum < MIN_RESIDUAL)
-        assign("MIN_RESIDUAL", maximum, envir = .GlobalEnv)
-    }
-    
-  }
-  
-  if(tail(max_residuals, n=1) < epsilon)
-  {
-    #print(tail(max_residuals, n=1))
-    print("Found minimum residual")
-    return(TRUE)
-  }
-  
-  return(FALSE)
-  
-}
+#currentTemperature = numeric()
 
-
-
-currentTemperature = numeric()
-
-for(it in 2:nrow(temperature))
+for(it in 2:n)
 {
   res = calculate_Shifts(it)
   SHIFTSU_RESULT[[it]] = res$shift.u
   SHIFTSV_RESULT[[it]] = res$shift.v
-  
+  ksi_result[[it]] = res$ksi
+  sigma_result[[it]] = res$sigma
+  #U_res[it]=res$testU
 }
+
+sig = sigma_result[[n]]
+mizes_s = matrix(data = 0, nrow = rows, ncol = cols)
+mizes_res = list(mizes_s)
+for( k in 1:cols)
+  for(m in 1:rows)
+  {
+      mizes_s[k,m] = sqrt((sig[[1]][k,m]-sig[[4]][k,m])^2+(sig[[4]][k,m]-sig[[5]][k,m])^2+(sig[[5]][k,m]-sig[[1]][k,m])^2+ 6*sig[[2]][k,m]^2)
+  }
 
 
 

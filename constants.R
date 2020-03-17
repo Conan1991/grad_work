@@ -36,17 +36,7 @@ nu = 0.25
 epsilon = 0.01
 number_of_iterations = 500
 
-rows = length(x)
-cols = length(x)
-y = x
-
 step_x = 0.00045#/2
 step_y = 0.00045#/2
 step_t = (step_x^2/lambda)/100#*4
 
-shiftU = shiftV = matrix(data = 0, nrow = rows, ncol = cols)
-colnames(shiftU)= colnames(shiftV) = x
-row.names(shiftU) = row.names(shiftV) = y
-
-SHIFTS_U = list(shiftU)
-SHIFTS_V = list(shiftV)
