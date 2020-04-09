@@ -17,8 +17,6 @@ sigma11=sigma21=sigma12=sigma22=sigma33=matrix(data = 0, nrow = rows, ncol = col
 SHIFTS_U = list(shiftU)
 SHIFTS_V = list(shiftV)
 
-U = numeric(length(x))
-
 calculate_Shifts = function(iteration = 0)
 {
   for (t in 2:number_of_iterations) {

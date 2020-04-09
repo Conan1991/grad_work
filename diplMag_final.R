@@ -27,15 +27,17 @@ for(it in 2:n)
   #U_res[it]=res$testU
 }
 
+#mizes calculation
 sig = sigma_result[[n]]
 mizes_s = matrix(data = 0, nrow = rows, ncol = cols)
 mizes_res = list(mizes_s)
 for( k in 1:cols)
+{
   for(m in 1:rows)
   {
       mizes_s[k,m] = sqrt((sig[[1]][k,m]-sig[[4]][k,m])^2+(sig[[4]][k,m]-sig[[5]][k,m])^2+(sig[[5]][k,m]-sig[[1]][k,m])^2+ 6*sig[[2]][k,m]^2)
   }
-
+}
 
 
 RESULTS_DIRECTORY <- paste(Sys.getenv("HOME"), "\\GitHub\\grad_work\\GradResults\\", sep="")
