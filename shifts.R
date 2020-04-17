@@ -17,10 +17,22 @@ sigma11=sigma21=sigma12=sigma22=sigma33=matrix(data = 0, nrow = rows, ncol = col
 SHIFTS_U = list(shiftU)
 SHIFTS_V = list(shiftV)
 
+checkBorders = function(iter)
+{
+  x_truncated = numeric()
+  #y_truncated = numeric()
+  for(i in 1:length(x))
+  if(temperature[iter, i] < 0)
+    x_truncated[i] = temperature[iter, i]
+
+  return(x_truncated)
+}
+
 calculate_Shifts = function(iteration = 0)
 {
+  x_tr = checkBorders(iteration)
   for (t in 2:number_of_iterations) {
-    for (i in 2:(rows - 1))
+    for (i in 2:(length(x_tr) - 1))
     {
       for (j in 2:(cols - 1))
       {
@@ -30,19 +42,20 @@ calculate_Shifts = function(iteration = 0)
     }
     SHIFTS_U[[t]] = shiftU
     SHIFTS_V[[t]] = shiftV
-    ##fit first layers
+    
+    ##fit first and last layers
     for (k in 2:(cols - 1))
     {
-      SHIFTS_U[[t]][1, k] = lambda * step_x / (2 * step_y) * (SHIFTS_V[[t - 1]][1, k + 1] - SHIFTS_V[[t - 1]][1, k - 1]) / (lambda + 2 * nu) - 3 * lambda * alpha * step_x * temperature[2, 1] / (lambda + 2 * nu) + SHIFTS_U[[t]][2, k]
+      SHIFTS_U[[t]][1, k] = lambda * step_x / (2 * step_y) * (SHIFTS_V[[t - 1]][1, k + 1] - SHIFTS_V[[t - 1]][1, k - 1]) / (lambda + 2 * nu) - 3 * lambda * alpha * step_x * temperature[iteration, 1] / (lambda + 2 * nu) + SHIFTS_U[[t]][2, k]
       SHIFTS_V[[t]][1, k] = step_x / (2 * step_y) * (SHIFTS_U[[t - 1]][1, k + 1] - SHIFTS_U[[t - 1]][1, k - 1]) + SHIFTS_V[[t]][2, k]
-      SHIFTS_U[[t]][rows, k] = SHIFTS_U[[t]][rows - 1, k] - lambda * step_x /
-        (2 * step_y) * (SHIFTS_V[[t - 1]][rows, k + 1] - SHIFTS_V[[t - 1]][rows, k - 1]) / (lambda + 2 * nu) + 3 * lambda * alpha * step_x * temperature[1, rows] / (lambda + 2 * nu)
-      SHIFTS_V[[t]][rows , k] = SHIFTS_V[[t]][rows - 1, k] - step_x / (2 * step_y) * (SHIFTS_U[[t - 1]][rows, k + 1] - SHIFTS_U[[t - 1]][rows, k - 1])
+      SHIFTS_U[[t]][length(x_tr), k] = SHIFTS_U[[t]][length(x_tr) - 1, k] - lambda * step_x /
+(2 * step_y) * (SHIFTS_V[[t - 1]][length(x_tr), k + 1] - SHIFTS_V[[t - 1]][length(x_tr), k - 1]) / (lambda + 2 * nu) + 3 * lambda * alpha * step_x * temperature[iteration, length(x_tr)] / (lambda + 2 * nu)
+      SHIFTS_V[[t]][length(x_tr) , k] = SHIFTS_V[[t]][length(x_tr) - 1, k] - step_x / (2 * step_y) * (SHIFTS_U[[t - 1]][length(x_tr), k + 1] - SHIFTS_U[[t - 1]][length(x_tr), k - 1])
     }
   }
+  
   shiftU = SHIFTS_U[[number_of_iterations]]
   shiftV = SHIFTS_V[[number_of_iterations]]
-  
   
   for (t in 2:number_of_iterations) {
     for(i in 2:(rows-1))
@@ -63,12 +76,12 @@ calculate_Shifts = function(iteration = 0)
   ksi = list(ksi11,ksi12,ksi21,ksi22)
   sigma = list(sigma11,sigma12,sigma21,sigma22,sigma33)
   
-  delta_T = abs(temperature[iteration,1]-temperature[iteration,rows])
+  delta_T = abs(temperature[iteration,1]-temperature[iteration,length(x_tr)])
   #for(i in 1:rows)
   #  U[i] = y[rows]*alpha*delta_T/(8*x[rows])
-  #print(U)
-  
-  result = list(shift.u = shiftU, shift.v = shiftV, ksi = ksi, sigma = sigma)
+  Test_U = y[rows]*alpha*delta_T/(8*x[length(x_tr)])
+    
+  result = list(shift.u = shiftU, shift.v = shiftV, ksi = ksi, sigma = sigma, test.u = Test_U)
   return(result)
 }
 
