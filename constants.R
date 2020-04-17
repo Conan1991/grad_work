@@ -34,7 +34,7 @@ lambda =  0.1
 alpha = 0.33
 nu = 0.25
 epsilon = 0.01
-number_of_iterations = 500
+number_of_iterations = 2000
 
 step_x = 0.00045#/2
 step_y = 0.00045#/2
