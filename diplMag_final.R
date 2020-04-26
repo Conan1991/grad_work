@@ -26,9 +26,9 @@ for(it in 3:n)
   ksi_result[[it]] = res$ksi
   sigma_result[[it]] = res$sigma
   Test_U[it] = res$test.u
-  file.path = paste(RESULTS_DIRECTORY, "result_", it, ".csv", sep = "")
-  Uacc = formatC(SHIFTSU_RESULT[[it]], digits = 6, format = "f")
-  write.table(Uacc, file = file.path, sep = ";")
+  #file.path = paste(RESULTS_DIRECTORY, "result_", it, ".csv", sep = "")
+  #Uacc = formatC(SHIFTSU_RESULT[[it]], digits = 6, format = "f")
+  #write.table(Uacc, file = file.path, sep = ";")
 }
 
 #print(SHIFTSU_RESULT[[5]][2,2])
@@ -48,5 +48,5 @@ for( k in 1:cols)
 
 
 #write(Test_U, file = "tempU.txt")
-write.table(Test_U, "Test_U.csv", col.names = "Test_U values", row.names = FALSE, sep = ";")
+write.table(Test_U, "Test_U_3.csv", col.names = "Test_U values", row.names = FALSE, sep = ";")
 

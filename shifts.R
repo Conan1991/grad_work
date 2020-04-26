@@ -76,10 +76,10 @@ calculate_Shifts = function(iteration = 0)
   ksi = list(ksi11,ksi12,ksi21,ksi22)
   sigma = list(sigma11,sigma12,sigma21,sigma22,sigma33)
   
-  delta_T = abs(temperature[iteration,1]-temperature[iteration,length(x_tr)])
+  delta_T = abs(temperature[iteration,1] - temperature[iteration,length(x_tr)])
   #for(i in 1:rows)
   #  U[i] = y[rows]*alpha*delta_T/(8*x[rows])
-  Test_U = y[rows]*alpha*delta_T/(8*x[length(x_tr)])
+  Test_U = y[rows]^2 * alpha * delta_T / (8 * x[length(x_tr)])
     
   result = list(shift.u = shiftU, shift.v = shiftV, ksi = ksi, sigma = sigma, test.u = Test_U)
   return(result)
