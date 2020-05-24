@@ -10,8 +10,8 @@ shiftU = shiftV = matrix(data = 0, nrow = rows, ncol = cols)
 colnames(shiftU)= colnames(shiftV) = x
 row.names(shiftU) = row.names(shiftV) = y
 
-ksi11= ksi12= ksi21=ksi22=matrix(data = 0, nrow = rows, ncol = cols)
-sigma11=sigma21=sigma12=sigma22=sigma33=matrix(data = 0, nrow = rows, ncol = cols)
+ksi11 = ksi12 = ksi21 = ksi22 = matrix(data = 0, nrow = rows, ncol = cols)
+sigma11 = sigma21 = sigma12 = sigma22 = sigma33 = matrix(data = 0, nrow = rows, ncol = cols)
 
 
 SHIFTS_U = list(shiftU)
@@ -32,6 +32,7 @@ calculate_Shifts = function(iteration = 0)
 {
   x_tr = checkBorders(iteration)
   for (t in 2:number_of_iterations) {
+    
     for (i in 2:(length(x_tr) - 1))
     {
       for (j in 2:(cols - 1))
@@ -40,6 +41,9 @@ calculate_Shifts = function(iteration = 0)
         shiftV[i, j] = step_t * (nu * (SHIFTS_V[[t - 1]][i + 1, j] - 2 * SHIFTS_V[[t - 1]][i, j] + SHIFTS_V[[t - 1]][i - 1, j]) / step_x ^ 2 + (lambda + nu) * (SHIFTS_U[[t - 1]][i + 1, j + 1] - SHIFTS_U[[t - 1]][i - 1, j + 1] - SHIFTS_U[[t - 1]][i + 1, j - 1] + SHIFTS_U[[t - 1]][i - 1, j - 1]) / (4 * step_x * step_y) + (lambda + 2 * nu) * (SHIFTS_V[[t - 1]][i, j - 1] - 2 * SHIFTS_V[[t - 1]][i, j] + SHIFTS_V[[t - 1]][i, j + 1]) / step_y ^ 2) + SHIFTS_V[[t - 1]][i, j]
        }
     }
+    #if (t < 10 || t > number_of_iterations - 1 )
+    #   print(shiftU[2,])
+    
     SHIFTS_U[[t]] = shiftU
     SHIFTS_V[[t]] = shiftV
     
