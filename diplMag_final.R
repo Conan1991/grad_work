@@ -39,12 +39,12 @@ for(it in 3:n)
 #mizes calculation
 sig = sigma_result[[n]]
 mizes_s = matrix(data = 0, nrow = rows, ncol = cols) #критерий прочности
-mizes_res = list(mizes_s)
+#mizes_res = list(mizes_s)
 for( k in 1:cols)
 {
   for(m in 1:rows)
   {
-      mizes_s[k,m] = sqrt((sig[[1]][k,m] - sig[[4]][k,m])^2 + (sig[[4]][k,m] - sig[[5]][k,m])^2 + (sig[[5]][k,m] - sig[[1]][k,m])^2 + 6 * sig[[2]][k,m]^2)
+      mizes_s[k,m] = sqrt( (sig[[1]][k,m] - sig[[4]][k,m])^2 + (sig[[4]][k,m] - sig[[5]][k,m])^2 + (sig[[5]][k,m] - sig[[1]][k,m])^2 + 6 * sig[[2]][k,m]^2)
   }
 }
 
@@ -54,17 +54,17 @@ shiftsV=SHIFTSU_RESULT[[n]]
 shiftsH=SHIFTSV_RESULT[[n]]
 
 #old_matrix = new_matrix = list()
-list_p_x = list_p_y = list(vecp_x)
-list_new_x = list_new_y = list(vecp_x)
+list_p_x = list_p_y = list()
+list_new_x = list_new_y = list()
 #for(t in 1:n)
 #{
-  for(i in 1:nrow(shitsV))
+  for(i in 1:nrow(shiftsV))
   {
     vecp_x = vecp_new_x = c()
     vecp_y = vecp_new_y = c()
     
     
-    for(j in 1:ncol(shitsV))
+    for(j in 1:ncol(shiftsV))
     {
       vecp_x[j] <- x[i]
       vecp_y[j] <- y[j]
@@ -91,19 +91,19 @@ library(animation)
 oopt = ani.options(interval = 0.3)
 
 ani.record(reset = TRUE)
-for(j in 2:10)
+for(j in 1:nrow(shiftsV))
 {
   file.path = paste(RESULTS_DIRECTORY,"\\graph\\" , "result_", j, ".bmp", sep = "")
-  bmp(file.path)
+  #bmp(file.path)
   
   plot(list_p_y[[j]], list_p_x[[j]], xaxt="n",  xlab="value of y" , ylab="value of x")
   points(list_new_y[[j]], list_new_x[[j]], type = "p")
   axis(1, at = list_p_y[[j]])
-#points(old_point_x, point_x,type = "p")
+  #points(old_point_x, point_x,type = "p")
   lines(list_p_y[[j]], list_p_x[[j]], col="red")
   lines(list_new_y[[j]], list_new_x[[j]], col="blue")
   
-  dev.off()
+  #dev.off()
 
   ani.pause()
   ani.record()

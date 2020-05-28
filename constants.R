@@ -33,11 +33,11 @@ for(i in 1:N+1)
 lambda =  0.1
 #коэффициент линейного теплового расширения
 alpha = 0.0033# для металлов ~10^-4
-
 nu = 0.25 #Модуль сдвига постоянная Ламе
 
 epsilon = 0.01
-number_of_iterations = 2000
+
+number_of_iterations = 3
 
 
 step_x = 0.00045#/2
