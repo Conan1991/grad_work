@@ -48,13 +48,13 @@ ThermalConduct = function()
   {
     #0
     #1/(1+t)
-    -10
+    10
   }
   B = function(t)
   {
     #0
     #1/(1+t)
-    10
+    -10
   }
   
   for(j in 1:n)
@@ -67,7 +67,7 @@ ThermalConduct = function()
   {
     #A(tj[1]) + (B(tj[1])-A(tj[1]))*(x/L)^2;
     #1
-    10
+    -10
   }
   
   

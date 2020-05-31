@@ -1,12 +1,12 @@
-k1_U = 2.3 #Теплопроводность льда
+k2_U = 2.3 #Теплопроводность льда
 #k2_U = k1_U
-k2_U = 0.58 #Теплопроводность воды
+k1_U = 0.58 #Теплопроводность воды
 
-density_1  = 918.7 #Плотность льда
-density_2 = 999.7 #Плотность воды
+density_2  = 918.7 #Плотность льда
+density_1 = 999.7 #Плотность воды
 #mean_density= mean(c(density1,density2))
-heat_capacity1 = 2000 #Теплоёмкость льда
-heat_capacity2 = 4195 #Теплоёмкость воды
+heat_capacity2 = 2000 #Теплоёмкость льда
+heat_capacity1 = 4195 #Теплоёмкость воды
 
 c1_U = heat_capacity1 * density_1 
 c2_U = heat_capacity2 * density_2 
