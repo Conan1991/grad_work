@@ -22,6 +22,10 @@ RESULTS_DIRECTORY <- paste(Sys.getenv("HOME"), "\\GitHub\\grad_work\\GradResults
 for(it in 3:n)
 {
   res = calculate_Shifts(it)
+  if(is.null(res))
+  {
+    break
+  }
   SHIFTSU_RESULT[[it]] = res$shift.u
   SHIFTSV_RESULT[[it]] = res$shift.v
   ksi_result[[it]] = res$ksi
@@ -35,9 +39,9 @@ for(it in 3:n)
 #plot(SHIFTSU_RESULT[[3]][3,], xaxt="n")
 #axis(1, at = c(1:(cols)), labels = x)
 #lines(SHIFTSU_RESULT[[3]][3,],col="red")
- 
+last = length(SHIFTSU_RESULT)
 #mizes calculation
-sig = sigma_result[[n]]
+sig = sigma_result[[last]]
 mizes_s = matrix(data = 0, nrow = rows, ncol = cols) #критерий прочности
 #mizes_res = list(mizes_s)
 for( k in 1:cols)
@@ -50,8 +54,8 @@ for( k in 1:cols)
 
 
 #shifts calculation
-shiftsV=SHIFTSU_RESULT[[n]]
-shiftsH=SHIFTSV_RESULT[[n]]
+shiftsV=SHIFTSU_RESULT[[last]]
+shiftsH=SHIFTSV_RESULT[[last]]
 
 #old_matrix = new_matrix = list()
 list_p_x = list_p_y = list()
